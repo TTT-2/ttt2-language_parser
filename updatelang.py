@@ -16,7 +16,10 @@ def updatelang(base, update):
 			found_alias = True
 
 		if not found_alias and not line["type"] == "code":
-			newlang.append("-- " + update[i]["content"] + "\n")
+			if update[i]["content"] == "":
+				newlang.append("\n")
+			else:
+				newlang.append("-- " + update[i]["content"] + "\n")
 
 			continue
 
