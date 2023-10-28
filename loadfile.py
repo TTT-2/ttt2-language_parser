@@ -7,6 +7,7 @@ singleline_text_pattern = r'L\.([a-zA-Z_][a-zA-Z_0-9]*)\s*=\s*"((?:\\"|[^"])*)"'
 multiline_text_pattern_open = r'L\.([a-zA-Z_][a-zA-Z_0-9]*)\s*=\s*\[\[([^\]]*)'
 multiline_text_pattern_close = r'(.*?)\]\]'
 multiline_single_line = r'L\.([a-zA-Z_][a-zA-Z_0-9]*)\s*=\s*\[\[(.*?)\]\]'
+text_param_pattern = r'{([^{}]+)}'
 
 def loadfile(path):
 	# Create a list to store the data
@@ -62,6 +63,8 @@ def loadfile(path):
 				"content" : singleline_text_match.group(2)
 			})
 
+			data[line_counter]["params"] = re.findall(text_param_pattern, data[line_counter]["content"])
+
 			line_counter += 1
 
 			continue
@@ -73,6 +76,8 @@ def loadfile(path):
 				"identifier": multisingleline_text_match.group(1),
 				"content" : multisingleline_text_match.group(2)
 			})
+
+			data[line_counter]["params"] = re.findall(text_param_pattern, data[line_counter]["content"])
 
 			line_counter += 1
 
@@ -94,6 +99,8 @@ def loadfile(path):
 		multiline_text_match_close = re.search(multiline_text_pattern_close, line)
 		if multiline_text_match_close and line[0:2] != "--":
 			data[line_counter]["content"] += "\n" + multiline_text_match_close.group(1)
+
+			data[line_counter]["params"] = re.findall(text_param_pattern, data[line_counter]["content"])
 
 			line_counter += 1
 

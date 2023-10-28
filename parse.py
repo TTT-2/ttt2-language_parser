@@ -30,7 +30,7 @@ for lang_file in lang_file_list:
 	if not lang:
 		continue
 
-	new_lang = updatelang.updatelang(baselang, lang)
+	new_lang = updatelang.updatelang(baselang, lang, lang_file)
 
 	f = open(args.output + "/" + lang_file, "a", encoding="utf-8")
 
