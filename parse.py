@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser("parse language files")
 parser.add_argument("--in", help="A path to the input folder", type=str, dest="input")
 parser.add_argument("--out", help="A path to the output folder", type=str, dest="output")
 parser.add_argument("--base", help="The name of the base language", type=str)
+parser.add_argument("--ignore", help="Ignore the given file", type=str, nargs="+")
 args = parser.parse_args()
 
 lang_file_list = os.listdir(args.input)
@@ -23,6 +24,9 @@ if not baselang:
 
 for lang_file in lang_file_list:
 	if lang_file == base_file:
+		continue
+
+	if args.ignore and lang_file.split(".")[0] in args.ignore:
 		continue
 
 	lang = loadfile.loadfile(args.input + "/" + lang_file)
