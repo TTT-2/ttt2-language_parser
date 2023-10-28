@@ -6,22 +6,17 @@ def getelement(haystack, needle):
 		except KeyError:
 			continue
 
+def getaliasline(array):
+	for i, line in enumerate(array):
+		if line["type"] == "single" and line["identifier"] == "__alias":
+			return i
+
 def updatelang(base, update, lang_file):
 	newlang = []
 
-	found_alias = False
-
-	for i, line in enumerate(base):
-		if line["type"] == "single" and line["identifier"] == "__alias":
-			found_alias = True
-
-		if not found_alias and not line["type"] == "code":
-			if update[i]["content"] == "":
-				newlang.append("\n")
-			else:
-				newlang.append("-- " + update[i]["content"] + "\n")
-
-			continue
+	# first: copy header from old file
+	for i in range(0, getaliasline(update)):
+		line = update[i]
 
 		if line["type"] == "comment" or line["type"] == "empty":
 			if line["content"] != "":
@@ -32,12 +27,16 @@ def updatelang(base, update, lang_file):
 			continue
 
 		if line["type"] == "code":
-			old_code = getelement(update, "local")
+			newlang.append(line["content"] + "\n")
 
-			if not old_code:
-				newlang.append("ERROR: LANGUAGE LINE MISSING\n")
+	for i in range(getaliasline(base), len(base)):
+		line = base[i]
+
+		if line["type"] == "comment" or line["type"] == "empty":
+			if line["content"] != "":
+				newlang.append("-- " + line["content"] + "\n")
 			else:
-				newlang.append(old_code["content"] + "\n")
+				newlang.append("\n")
 
 			continue
 
